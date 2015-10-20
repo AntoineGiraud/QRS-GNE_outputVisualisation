@@ -63,6 +63,14 @@ app.controller('LinesCtrl', function($scope, $timeout, $rootScope){
     });
     $scope.loader = false;
 
+    $scope.networkSpatialExtent = []
+    _.each($scope.nodes_json, function(n) {
+        extentSpatialTrail ($scope.networkSpatialExtent, [[n.coords[0], n.coords[0]],[n.coords[1], n.coords[1]]])
+    });
+    squarifySpatialTrailExtent($scope.networkSpatialExtent)
+
+    console.log($scope.networkSpatialExtent); 
+
     /////////////////////
     // Autre Fonctions //
     /////////////////////
