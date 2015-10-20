@@ -2,9 +2,9 @@
 
 The output of QRS & GNE isn't quite handy to be directly put into excel or other web app.
 
-ThisThe This web app wants to help visualize those output data.
+This This web app wants to help visualize those output data.
 
-The datas have been preperead by https://github.com/AntoineGiraud/QRS-GNE_outputFormater.
+The datas have been prepered by https://github.com/AntoineGiraud/QRS-GNE_outputFormater.
 
 ## What is QRS II/GNE ?
 
