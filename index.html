@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html ng-app="app">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+
+        <meta name="author" content="Antoine Giraud">
+        <meta name="description" content="Exercice de visualisation de lignes de transport en commun">
+        <link rel="shortcut icon" href="img/favicon.png">
+        <title>QRSII/GNE Output Visualisation</title>
+
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/material.css" />
+        <link rel="stylesheet" type="text/css" href="css/loaders.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+    </head>
+    <body ng-controller="PageCtrl">    
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">VisuOutputQrsGne</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#imgReseau">Apperçu réseau</a></li>
+                <li><a href="#listZones">Liste zones</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+        </nav>
+
+        <div class="container">
+            <alert ng-repeat="alert in alerts" type="{{alert.type}}" dismiss-on-timeout="{{alert.timeout}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+            <section ng-controller="LinesCtrl">
+                <h1>Solution de référence</h1>
+                <h2 id="imgReseau" style="padding-top: 60px;">Apperçu réseau</h2>
+                <p><img src="img/reseau_GNE_bg_grenoble.PNG" alt="reseau_GNE_bg_grenoble.PNG"></p>
+                <h2 id="listZones" style="padding-top: 60px;">Liste des zones</h2>
+                <table class="lineCtrl table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                          <th>Liste Zones</th>
+                          <th colspan="3">Productions/Attractions</th>
+                          <th colspan="3">vehiculeTripsByZone</th>
+                        </tr>
+                        <tr>
+                          <th rowspan="2" class="cliquable" ng-click="orderBy('name')">name <span ng-class="order.class" ng-show="order.field=='name'"></span></th>
+                          <th class="cliquable" ng-click="orderBy('productions.HBW')">HBW  <span ng-class="order.class" ng-show="order.field=='productions.HBW'"></span></th>
+                          <th class="cliquable" ng-click="orderBy('productions.NHB')">NHB  <span ng-class="order.class" ng-show="order.field=='productions.NHB'"></span></th>
+                          <th class="cliquable" ng-click="orderBy('productions.HBNW')">HBNW  <span ng-class="order.class" ng-show="order.field=='productions.HBNW'"></span></th>
+                          <th class="cliquable" ng-click="orderBy('vehiculeTripsByZone.Leaving')">Leaving <span ng-class="order.class" ng-show="order.field=='vehiculeTripsByZone.Leaving'"></span></th>
+                          <th class="cliquable" ng-click="orderBy('vehiculeTripsByZone.IntraZonal')">IntraZonal <span ng-class="order.class" ng-show="order.field=='vehiculeTripsByZone.IntraZonal'"></span></th>
+                          <th class="cliquable" ng-click="orderBy('vehiculeTripsByZone.Entering')">Entering <span ng-class="order.class" ng-show="order.field=='vehiculeTripsByZone.Entering'"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="zone in zones_json | orderBy : order.query ">
+                        <tr>
+                          <td>{{zone.name}}</td>
+                          <td>
+                            <p style="margin: 0;">{{zone.productions.HBW}} / {{zone.attractions.HBW}}</p>
+                            <div class="progress" style="margin: 0;">
+                                <div class="progress-bar progress-bar-material-orange" style="width: {{parseInt(zone.productions.HBW / zonesMaxProdAttr *100)}}%" title="Aller OD {{parseInt(zone.productions.HBW / zonesMaxProdAttr *100)}}% ou {{zone.productions.HBW}} / {{zonesMaxProdAttr}}"><span class="sr-only">Aller OD {{line.percentCountODPerDir.A}}% ou {{line.countODPerDir.A}}</span></div>
+                                <div class="progress-bar progress-bar-success" style="width: {{parseInt(zone.attractions.HBW / zonesMaxProdAttr *100)}}%" title="Retour OD {{parseInt(zone.attractions.HBW / zonesMaxProdAttr *100)}}% ou {{zone.attractions.HBW}} / {{zonesMaxProdAttr}}"><span class="sr-only">Retour OD {{line.percentCountODPerDir.R}}% ou {{line.countODPerDir.R}}</span></div>
+                            </div>
+                          </td>
+                          <td>
+                            <p style="margin: 0;">{{zone.productions.NHB}} / {{zone.attractions.NHB}}</p>
+                            <div class="progress" style="margin: 0;">
+                                <div class="progress-bar progress-bar-material-orange" style="width: {{parseInt(zone.productions.NHB / zonesMaxProdAttr *100)}}%" title="Aller OD {{parseInt(zone.productions.NHB / zonesMaxProdAttr *100)}}% ou {{zone.productions.NHB}} / {{zonesMaxProdAttr}}"><span class="sr-only">Aller OD {{line.percentCountODPerDir.A}}% ou {{line.countODPerDir.A}}</span></div>
+                                <div class="progress-bar progress-bar-success" style="width: {{parseInt(zone.attractions.NHB / zonesMaxProdAttr *100)}}%" title="Retour OD {{parseInt(zone.attractions.NHB / zonesMaxProdAttr *100)}}% ou {{zone.attractions.NHB}} / {{zonesMaxProdAttr}}"><span class="sr-only">Retour OD {{line.percentCountODPerDir.R}}% ou {{line.countODPerDir.R}}</span></div>
+                            </div>
+                          </td>
+                          <td>
+                            <p style="margin: 0;">{{zone.productions.HBNW}} / {{zone.attractions.HBNW}}</p>
+                            <div class="progress" style="margin: 0;">
+                                <div class="progress-bar progress-bar-material-orange" style="width: {{parseInt(zone.productions.HBNW / zonesMaxProdAttr *100)}}%" title="Aller OD {{parseInt(zone.productions.HBNW / zonesMaxProdAttr *100)}}% ou {{zone.productions.HBNW}} / {{zonesMaxProdAttr}}"><span class="sr-only">Aller OD {{line.percentCountODPerDir.A}}% ou {{line.countODPerDir.A}}</span></div>
+                                <div class="progress-bar progress-bar-success" style="width: {{parseInt(zone.attractions.HBNW / zonesMaxProdAttr *100)}}%" title="Retour OD {{parseInt(zone.attractions.HBNW / zonesMaxProdAttr *100)}}% ou {{zone.attractions.HBNW}} / {{zonesMaxProdAttr}}"><span class="sr-only">Retour OD {{line.percentCountODPerDir.R}}% ou {{line.countODPerDir.R}}</span></div>
+                            </div>
+                          </td>
+                          <td>
+                            <p style="margin: 0;">{{zone.vehiculeTripsByZone.Leaving}}</p>
+                            <div class="progress" style="margin: 0;">
+                                <div class="progress-bar progress-bar-material-orange" style="width: {{parseInt(zone.vehiculeTripsByZone.Leaving / zonesMaxVehTrips *100)}}%" title="Aller OD {{parseInt(zone.vehiculeTripsByZone.Leaving / zonesMaxVehTrips *100)}}% ou {{zone.vehiculeTripsByZone.Leaving}} / {{zonesMaxVehTrips}}"><span class="sr-only">Aller OD {{line.percentCountODPerDir.A}}% ou {{line.countODPerDir.A}}</span></div>
+                            </div>
+                          </td>
+                          <td>
+                            <p style="margin: 0;">{{zone.vehiculeTripsByZone.IntraZonal}}</p>
+                            <div class="progress" style="margin: 0;">
+                                <div class="progress-bar progress-bar-info" style="width: {{parseInt(zone.vehiculeTripsByZone.IntraZonal / zonesMaxVehTrips *100)}}%" title="Aller OD {{parseInt(zone.vehiculeTripsByZone.IntraZonal / zonesMaxVehTrips *100)}}% ou {{zone.vehiculeTripsByZone.IntraZonal}} / {{zonesMaxVehTrips}}"><span class="sr-only">Aller OD {{line.percentCountODPerDir.A}}% ou {{line.countODPerDir.A}}</span></div>
+                            </div>
+                          </td>
+                          <td>
+                            <p style="margin: 0;">{{zone.vehiculeTripsByZone.Entering}}</p>
+                            <div class="progress" style="margin: 0;">
+                                <div class="progress-bar progress-bar-success" style="width: {{parseInt(zone.vehiculeTripsByZone.Entering / zonesMaxVehTrips *100)}}%" title="Aller OD {{parseInt(zone.vehiculeTripsByZone.Entering / zonesMaxVehTrips *100)}}% ou {{zone.vehiculeTripsByZone.Entering}} / {{zonesMaxVehTrips}}"><span class="sr-only">Aller OD {{line.percentCountODPerDir.A}}% ou {{line.countODPerDir.A}}</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div ng-show="loader">
+                    <div ng-hide="errorLoading" class="loader loader-quart-tiny"><div class="mask"><div class="maskedCircle"></div></div></div>
+                    <span ng-show="errorLoading" class="glyphicon glyphicon-exclamation-sign"></span>
+                    <span class="noticeText">{{loadingMessage}}</span>
+                </div>
+            </section>
+
+        </div><!-- /.container -->
+
+        <script src="output_json/nodes_json.js"></script>
+        <script src="output_json/links_json.js"></script>
+        <script src="output_json/zones_json.js"></script>
+
+        <script src="js/lib/lodash.min.js"></script>
+        <!-- <script src="js/lib/jquery.js"></script> -->
+        <script src="js/lib/angular.js"></script>
+        <!-- <script src="js/lib/bootstrap.min.js"></script> -->
+        <!-- <script src="js/lib/angular-route.js"></script> -->
+        <script src="js/lib/angular-sanitize.min.js"></script>
+        <script src="js/lib/d3.min.js"></script>
+        <script src="js/lib/d3.tip.v0.6.3.js"></script>
+        <script src="js/lib/proj4js.js"></script>
+        <script src="js/lib/elasticsearch.angular.min.js"></script>
+
+        <script src="js/app.js"></script>
+        <script src="js/controllers/PageCtrl.js"></script>
+        <script src="js/controllers/LinesCtrl.js"></script>
+        <script src="js/components/alert/alert.js"></script>
+        <script src="js/components/modal/modal.js"></script>
+
+    </body>
+</html>
