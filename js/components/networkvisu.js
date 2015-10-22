@@ -69,7 +69,6 @@ app.directive('networkvisu', function($rootScope) {
 
             // define render function
             scope.render = function(links){
-                console.log("scope.loadvisu", scope.loadvisu);
                 loadsExtent = d3.extent(links, function(d) {return getLoadVisuValue(d)});
                 var charge = d3.scale.linear().range([0.1, 10], .2).domain([0, loadsExtent[1]]);
 
