@@ -47,6 +47,17 @@ app.controller('LinesCtrl', function($scope, $timeout, $rootScope){
 
     $scope.zonesMaxProdAttr = 0
     $scope.zonesMaxVehTrips = 0
+    _.each($scope.links_json, function(l) {
+        if (l.type==2) {
+            l.params[2] = Math.round(l.params[2]*10) / 10
+            l.params[3] = Math.round(l.params[3]*10) / 10
+            l.params[8] = Math.round(l.params[8]*10) / 10
+            l.params[9] = Math.round(l.params[9]*10) / 10
+        }else if (l.type==3) {
+            l.params[4] = Math.round(l.params[4]*10) / 10
+            l.params[5] = Math.round(l.params[5]*10) / 10
+        };
+    });
     _.each($scope.zones_json, function(z) {
         z.productions.HBW = Math.round(z.productions.HBW)
         z.attractions.HBW = Math.round(z.attractions.HBW)

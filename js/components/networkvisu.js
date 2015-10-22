@@ -70,7 +70,11 @@ app.directive('networkvisu', function($rootScope) {
                     })
                     .attr("stroke", function(d) { return (d.type == 3)?"#007f00":"#7f0000"; })
                     .attr("stroke-width", function(d) { console.log(charge(getLoadVisuValue(d))); return charge(getLoadVisuValue(d)); })
-                    .attr("fill", "none");
+                    .attr("fill", "none")
+                    .on('mouseover', function(d) {
+                        tip.show(d.nom+", #"+d.id+", type "+d.type+"<br>Params:<em>["+d.params.join(", ")+"]</em><br>linkVolume:<em>[AB:"+d.linkVolumes.AB+", BA:"+d.linkVolumes.BA+"]</em>");
+                    })
+                    .on('mouseout', tip.hide);
 
                 svg.selectAll("circle.node")
                     .data(scope.nodes)
@@ -84,7 +88,7 @@ app.directive('networkvisu', function($rootScope) {
                     .attr("stroke-width", 0.2)
                     .attr("fill", function(d) { return (d.type == 2)?"#007f00":"#7f0000"; })
                     .on('mouseover', function(d) {
-                        tip.show(d.nom+", #"+d.id+"<br><em>["+d.params.join(", ")+"]</em>");
+                        tip.show(d.nom+", #"+d.id+", type "+d.type+"<br><em>["+d.params.join(", ")+"]</em>");
                     })
                     .on('mouseout', tip.hide);
             };
