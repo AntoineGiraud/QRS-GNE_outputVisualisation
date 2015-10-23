@@ -4,6 +4,7 @@ app.directive('networkvisu', function($rootScope) {
         scope: {
           nodes: "=",
           links: "=",
+          zones: "=",
           spatialextent: "=",
           loadvisu: "=",
           onClick: "&"
@@ -32,6 +33,17 @@ app.directive('networkvisu', function($rootScope) {
             
             svg.call(tip);
 
+            temp = {}
+            maxIntrazonal = 0
+            _.each(scope.zones, function(z) {
+                temp[z.name] = z
+                if (z.vehiculeTripsByZone.IntraZonal > maxIntrazonal)
+                    maxIntrazonal = z.vehiculeTripsByZone.IntraZonal;
+            });
+            scope.zones = temp
+            var chargeIntrazonal = d3.scale.linear().range([2.5, 15]).domain([0, maxIntrazonal]);
+            delete temp
+
             getLoadVisuValue = function(d) {
                 if (scope.loadvisu == "sum") return d.linkVolumes.AB + d.linkVolumes.BA
                 else if (scope.loadvisu == "AB") return d.linkVolumes.AB
@@ -48,7 +60,7 @@ app.directive('networkvisu', function($rootScope) {
                     var charge = d3.scale.linear().range([0.1, 10], .2).domain([0, loadsExtent[1]]);
 
                     svg.selectAll("path.link")
-                        .attr("stroke-width", function(d) { console.log(charge(getLoadVisuValue(d))); return charge(getLoadVisuValue(d)); });
+                        .attr("stroke-width", function(d) { return charge(getLoadVisuValue(d)); });
                 };
             }, true);
             scope.$watch('links', function(newVals, oldVals) {
@@ -69,7 +81,7 @@ app.directive('networkvisu', function($rootScope) {
                         return lineFunction([d.ptA, d.ptB]);
                     })
                     .attr("stroke", function(d) { return (d.type == 3)?"#007f00":"#7f0000"; })
-                    .attr("stroke-width", function(d) { console.log(charge(getLoadVisuValue(d))); return charge(getLoadVisuValue(d)); })
+                    .attr("stroke-width", function(d) { return charge(getLoadVisuValue(d)); })
                     .attr("fill", "none")
                     .on('mouseover', function(d) {
                         tip.show(d.nom+", #"+d.id+", type "+d.type+"<br>Params:<em>["+d.params.join(", ")+"]</em><br>linkVolume:<em>[AB:"+d.linkVolumes.AB+", BA:"+d.linkVolumes.BA+"]</em>");
@@ -83,12 +95,14 @@ app.directive('networkvisu', function($rootScope) {
                     // .on("click", function(d, i){return scope.onClick({item: d});})
                     .attr("cx", function(d) { return x(d.coords[0]); })
                     .attr("cy", function(d) { return y(d.coords[1]); })
-                    .attr("r", 2.2)
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 0.2)
+                    .attr("r", function(d) { return chargeIntrazonal(
+                        (d.type==2)?scope.zones[d.nom].vehiculeTripsByZone.IntraZonal:0
+                    )})
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", 1)
                     .attr("fill", function(d) { return (d.type == 2)?"#007f00":"#7f0000"; })
                     .on('mouseover', function(d) {
-                        tip.show(d.nom+", #"+d.id+", type "+d.type+"<br><em>["+d.params.join(", ")+"]</em>");
+                        tip.show(d.nom+", #"+d.id+", type "+d.type+"<br><em>["+d.params.join(", ")+"]</em>"+((d.type==2)?"<br><em>vehiculeTripsByZone.IntraZonal: ["+scope.zones[d.nom].vehiculeTripsByZone.IntraZonal+"]</em>":""));
                     })
                     .on('mouseout', tip.hide);
             };
