@@ -1,4 +1,4 @@
-app.directive('networkvisu', function($rootScope) {
+app.directive('networkspeeds', function($rootScope) {
     return {
         restrict: 'EA',
         scope: {
@@ -11,8 +11,8 @@ app.directive('networkvisu', function($rootScope) {
         },
         link: function(scope, iElement, iAttrs) {
             var margin = {top: 20, right: 20, bottom: 20, left: 20},
-            width = 700 - margin.left - margin.right,
-            height = 700 - margin.top - margin.bottom;
+            width = 600 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
             loadsExtent = []
 
             var x = d3.scale.linear().range([0, width], .2).domain(scope.spatialextent[0]);
@@ -80,8 +80,13 @@ app.directive('networkvisu', function($rootScope) {
                     .attr("d", function(d) {
                         return lineFunction([d.ptA, d.ptB]);
                     })
-                    .attr("stroke", function(d) { return (d.type == 3)?"#007f00":"#7f0000"; })
-                    .attr("stroke-width", function(d) { return charge(getLoadVisuValue(d)); })
+                    .attr("stroke", function(d) {
+                        if (d.type == 3) return "#007f00";
+                        else if (d.params[1] >= 90) return "#7f0000";
+                        else if (d.params[1] >= 50) return "#f03b20";
+                        else return "#fecc5c";
+                    })
+                    .attr("stroke-width", 3)
                     .attr("fill", "none")
                     .on('mouseover', function(d) {
                         tip.show(d.nom+", #"+d.id+", type "+d.type+"<br>Params:<em>["+d.params.join(", ")+"]</em><br>linkVolume:<em>[AB:"+d.linkVolumes.AB+", BA:"+d.linkVolumes.BA+"]</em>");
@@ -95,9 +100,7 @@ app.directive('networkvisu', function($rootScope) {
                     // .on("click", function(d, i){return scope.onClick({item: d});})
                     .attr("cx", function(d) { return x(d.coords[0]); })
                     .attr("cy", function(d) { return y(d.coords[1]); })
-                    .attr("r", function(d) { return chargeIntrazonal(
-                        (d.type==2)?scope.zones[d.nom].vehiculeTripsByZone.IntraZonal:0
-                    )})
+                    .attr("r", 4)
                     .attr("stroke", "#fff")
                     .attr("stroke-width", 1)
                     .attr("fill", function(d) { return (d.type == 2)?"#007f00":"#7f0000"; })

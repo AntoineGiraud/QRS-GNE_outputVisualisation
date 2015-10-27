@@ -33,7 +33,8 @@
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#imgReseau">Apperçu réseau</a></li>
                 <li><a href="#listZones">Liste zones</a></li>
-                <li><a href="#visuReseau">Visu réseau</a></li>
+                <li><a href="#listZones">Visu réseau</a></li>
+                <li><a href="#networkspeeds">Vitesses</a></li>
               </ul>
             </div><!--/.nav-collapse -->
           </div>
@@ -46,7 +47,7 @@
                 <h1>Solution de référence</h1>
                 <h2 id="imgReseau" style="padding-top: 60px;">Apperçu réseau</h2>
                 <p><img src="img/reseau_GNE_bg_grenoble.PNG" alt="reseau_GNE_bg_grenoble.PNG"></p>
-                <h2 id="listZones" style="padding-top: 60px;">Liste des zones</h2>
+                <h2 id="visuReseau" style="padding-top: 60px;">Liste des zones</h2>
                 <table class="lineCtrl table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
@@ -123,6 +124,8 @@
                   </select>
                 </form>
                 <networkvisu nodes="nodes_json" links="links_json" zones="zones_json" spatialextent="networkSpatialExtent" loadvisu="loadvisu"></networkvisu>
+                <h2 id="networkspeeds" style="padding-top: 60px;">Vitesses du réseau</h2>
+                <networkspeeds nodes="nodes_json" links="links_json" zones="zones_json" spatialextent="networkSpatialExtent" loadvisu="loadvisu"></networkspeeds>
             </section>
 
         </div><!-- /.container -->
@@ -148,6 +151,7 @@
         <script src="js/components/alert/alert.js"></script>
         <script src="js/components/modal/modal.js"></script>
         <script src="js/components/networkvisu.js"></script>
+        <script src="js/components/networkspeeds.js"></script>
 
     </body>
 </html>
