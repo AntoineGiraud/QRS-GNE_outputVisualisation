@@ -12,3 +12,10 @@ The datas have been prepered by https://github.com/AntoineGiraud/QRS-GNE_outputF
 **QRSII** stands for *Quick Response System*. It enables you to perform a [sequential four-step model](https://en.wikipedia.org/wiki/Transportation_forecasting#Four-step_models) based on the .dat files created by GNE.
 
 *[QRS II/GNE website](http://www.ajhassoc.com/intro.htm)*
+
+## Glimpse at the visualization webpage:
+
+In this scenario, we increased the speed ont the road / highways circling our "town":
+
+![Version 1 avec vitesses augmentées sur la couronne](/v1.png)
+
