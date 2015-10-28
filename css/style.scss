@@ -179,6 +179,9 @@ body{
   top: 100%;
   left: 0;
 }
+.bar text {
+  fill: #222;
+}
 
 .bar-default .bar {fill: #009688;}
 .bar-black .bar {fill: #000000;}

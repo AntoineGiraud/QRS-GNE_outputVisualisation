@@ -35,6 +35,7 @@
                 <li><a href="#listZones">Liste zones</a></li>
                 <li><a href="#visuReseau">Visu réseau</a></li>
                 <li><a href="#networkspeeds">Vitesses</a></li>
+                <li><a href="#timehistogram">Hist. tps inter zones</a></li>
               </ul>
             </div><!--/.nav-collapse -->
           </div>
@@ -126,13 +127,16 @@
                 <networkvisu nodes="nodes_json" links="links_json" zones="zones_json" spatialextent="networkSpatialExtent" loadvisu="loadvisu"></networkvisu>
                 <h2 id="networkspeeds" style="padding-top: 60px;">Vitesses du réseau</h2>
                 <networkspeeds nodes="nodes_json" links="links_json" zones="zones_json" spatialextent="networkSpatialExtent" loadvisu="loadvisu"></networkspeeds>
+                <h2 id="timehistogram" style="padding-top: 60px;">Histogramme des temps interzone</h2>
+                <timehistogram odtemps="zonesODCTimes_json"></timehistogram>
             </section>
 
         </div><!-- /.container -->
 
-        <script src="output_json/nodes_json_v5.js"></script>
-        <script src="output_json/links_json_v5.js"></script>
-        <script src="output_json/zones_json_v5.js"></script>
+        <script src="output_json/nodes_json_v1.js"></script>
+        <script src="output_json/links_json_v1.js"></script>
+        <script src="output_json/zones_json_v1.js"></script>
+        <script src="output_json/zonesODCTimes_json_v1.js"></script>
 
         <script src="js/lib/lodash.min.js"></script>
         <!-- <script src="js/lib/jquery.js"></script> -->
@@ -152,5 +156,6 @@
         <script src="js/components/modal/modal.js"></script>
         <script src="js/components/networkvisu.js"></script>
         <script src="js/components/networkspeeds.js"></script>
+        <script src="js/components/timehistogram.js"></script>
     </body>
 </html>

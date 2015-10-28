@@ -44,6 +44,7 @@ app.controller('LinesCtrl', function($scope, $timeout, $rootScope){
     $scope.zones_json = zones_json
     $scope.nodes_json = nodes_json
     $scope.links_json = links_json
+    $scope.zonesODCTimes_json = zonesODCTimes_json
 
     $scope.zonesMaxProdAttr = 0
     $scope.zonesMaxVehTrips = 0
